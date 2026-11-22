@@ -23,7 +23,7 @@ Clique em **RANDOMIZE** (ou aperte a barra de espaço).
 3. Rode `npm run catalogar`.
 
 O script envia só as imagens novas para o Claude (visão), recebe um nome curto (ex.: "Frog King")
-e grava em `data/references.js`. Precisa de `ANTHROPIC_API_KEY` no ambiente (ou login via `ant auth login`).
+e uma paleta de cores, e grava em `data/references.js`. A paleta é o que faz o site mudar de cor quando a imagem é sorteada. Precisa de `ANTHROPIC_API_KEY` no ambiente (ou login via `ant auth login`).
 Se quiser trocar algum nome, edite `data/references.js` à mão. Imagens apagadas da pasta saem do banco
 na próxima execução.
 

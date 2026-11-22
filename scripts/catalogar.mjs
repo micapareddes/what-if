@@ -1,7 +1,8 @@
 // Catalogar novas imagens do banco de referências — E SE?
 //
 // Procura imagens em /color-palette que ainda não estão em data/references.js,
-// envia cada uma para o Claude (visão) e grava o nome identificador gerado.
+// envia cada uma para o Claude (visão) e grava o nome identificador e a paleta
+// de cores (usada para o site mudar de cor conforme a imagem sorteada).
 // Roda só no cadastro — o sorteio no site continua 100% local.
 //
 // Uso:  npm install   (uma vez)
@@ -39,7 +40,12 @@ It must say WHAT the image shows in a simple, friendly way, like a nickname for 
 examples: "Cat Sticker", "Red Cherries", "Blue Balloon", "Pink Matchbox", "Lemon Soap", "Vintage Bow", "Frog King".
 Do NOT describe the color palette, mood or style. No quotes, no punctuation, no explanation.
 Avoid these names, already used: {USED}.
-Reply with the name only.`;
+
+Also extract the image's color palette: 5 to 7 hex colors, ordered from the most striking/vivid
+to the least. Prefer the colors that give the image its character; skip plain white or black backgrounds.
+
+Reply with JSON only, exactly in this shape:
+{"name": "Frog King", "palette": ["#3f8f5a", "#d9b23c", "#7a4a3a", "#c9d6c0", "#2b3a2e"]}`;
 
 async function nameImage(client, file, used) {
   const ext = path.extname(file).toLowerCase();
@@ -62,7 +68,11 @@ async function nameImage(client, file, used) {
   });
   if (response.stop_reason === "refusal") throw new Error("o modelo recusou nomear esta imagem");
   const text = response.content.filter((b) => b.type === "text").map((b) => b.text).join("").trim();
-  return text.replace(/["'.]/g, "").split("\n")[0].trim();
+  const json = JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1));
+  const name = String(json.name || "").replace(/["'.]/g, "").trim();
+  const palette = (json.palette || []).filter((c) => /^#[0-9a-f]{6}$/i.test(c)).map((c) => c.toLowerCase());
+  if (!name) throw new Error("resposta sem nome");
+  return { name, palette };
 }
 
 async function main() {
@@ -88,9 +98,9 @@ async function main() {
   for (const file of fresh) {
     process.stdout.write(`${file} → `);
     try {
-      const name = await nameImage(client, file, kept.map((i) => i.name));
-      kept.push({ file, name });
-      console.log(name);
+      const { name, palette } = await nameImage(client, file, kept.map((i) => i.name));
+      kept.push({ file, name, palette });
+      console.log(`${name}  ${palette.join(" ")}`);
     } catch (err) {
       kept.push({ file, name: path.parse(file).name });
       console.log(`(sem nome: ${err.message}) — edite manualmente em data/references.js`);

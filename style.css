@@ -34,7 +34,6 @@
   --display: "Bagel Fat One", "Arial Rounded MT Bold", system-ui, sans-serif;
   --label: "Outfit", system-ui, sans-serif;
 
-  --win-h: clamp(210px, 30vh, 320px);
   --stripe: 26px;
 }
 
@@ -50,12 +49,14 @@ body {
 }
 
 .page {
-  min-height: 100vh;
+  /* tudo cabe em uma tela: as colunas ocupam o espaço que sobra */
+  height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(24px, 4vh, 44px);
-  padding: clamp(28px, 5vh, 56px) clamp(16px, 4vw, 56px) 28px;
+  gap: clamp(10px, 2.6vh, 36px);
+  padding: clamp(14px, 3.6vh, 44px) clamp(12px, 4vw, 56px) clamp(10px, 2vh, 20px);
 }
 
 /* ---------- Título ---------- */
@@ -74,21 +75,25 @@ body {
 .title {
   font-family: var(--display);
   font-weight: 400;
-  font-size: clamp(4.5rem, 12vw, 9rem);
+  font-size: clamp(2.8rem, min(12vw, 14vh), 9rem);
   line-height: 0.9;
   letter-spacing: -0.02em;
   margin-top: 0.12em;
 }
 
 .spark { width: 18px; height: 18px; fill: currentColor; flex: none; }
-.spark--title { width: 26px; height: 26px; margin-top: 14px; }
+.spark--title { width: clamp(16px, 3vh, 26px); height: clamp(16px, 3vh, 26px); margin-top: clamp(4px, 1.4vh, 14px); }
 
 /* ---------- Colunas ---------- */
 .slots {
   width: min(1240px, 100%);
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(10px, 1.4vw, 18px);
+  grid-template-rows: minmax(0, 1fr);
+  gap: clamp(8px, 1.4vw, 18px);
+  flex: 1 1 0;
+  min-height: 0;
+  max-height: 560px;
 }
 
 .card {
@@ -97,9 +102,8 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 14px;
-  padding: 26px 16px 24px;
-  aspect-ratio: 3 / 4;
-  min-height: calc(var(--win-h) + 120px);
+  padding: clamp(14px, 3vh, 26px) 16px clamp(12px, 2.6vh, 24px);
+  min-height: 0;
 }
 
 .card--category { background: var(--c1-bg); color: var(--c1-ink); }
@@ -190,7 +194,8 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 16px;
-  padding: 18px 40px 20px;
+  flex: none;
+  padding: clamp(10px, 2vh, 18px) 40px clamp(12px, 2.2vh, 20px);
   border: 0;
   border-radius: 999px;
   background: var(--ink);
@@ -217,16 +222,26 @@ body {
 
 /* ---------- Responsivo ---------- */
 @media (max-width: 960px) {
-  .slots { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .card { aspect-ratio: auto; min-height: calc(var(--win-h) + 110px); }
-  .item { font-size: clamp(1.5rem, 4.4vw, 2.3rem); }
+  .slots { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); max-height: none; }
+  .item { font-size: clamp(1.3rem, min(4.2vw, 4vh), 2.3rem); }
 }
 
 @media (max-width: 540px) {
-  :root { --win-h: 110px; --stripe: 22px; }
-  .card { padding: 18px 14px 16px; gap: 8px; }
-  .slots { grid-template-columns: 1fr; }
-  .card { min-height: calc(var(--win-h) + 100px); }
-  .item { font-size: 2rem; }
-  .window--image { min-height: 260px; }
+  :root { --stripe: 16px; }
+  .card { padding: 12px 8px 10px; gap: 6px; }
+  .card--ref { padding: 6px; }
+  .card--ref .frame { padding: 10px 6px 8px; gap: 6px; outline-offset: -6px; }
+  .label { font-size: 0.6rem; letter-spacing: 0.18em; }
+  .eyebrow { font-size: 0.62rem; letter-spacing: 0.2em; }
+  .item { font-size: clamp(1.05rem, 5.4vw, 1.5rem); padding: 0 4px; }
+  .item--placeholder { font-size: 2.6rem; }
+  .card .spark { width: 13px; height: 13px; }
+  .window--image { border-width: 4px; }
+  .spin { padding-inline: 28px; gap: 12px; }
+}
+
+/* telas muito baixas (celular deitado): deixa rolar em vez de espremer */
+@media (max-height: 500px) {
+  .page { height: auto; min-height: 100vh; }
+  .slots { flex: none; height: 300px; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr); }
 }
