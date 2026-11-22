@@ -1,3 +1,24 @@
+/* Papéis de cor do tema. Começam na paleta da identidade E SE? e, no modo
+   teste, são trocados pelo app.js com as cores da imagem sorteada. */
+@property --bg { syntax: '<color>'; inherits: true; initial-value: #fdf4e3; }
+@property --ink { syntax: '<color>'; inherits: true; initial-value: #b8264f; }
+@property --ink-shadow { syntax: '<color>'; inherits: true; initial-value: #7e1736; }
+@property --c1-bg { syntax: '<color>'; inherits: true; initial-value: #f8e29a; }
+@property --c1-ink { syntax: '<color>'; inherits: true; initial-value: #b8264f; }
+@property --c2-a { syntax: '<color>'; inherits: true; initial-value: #d9cff2; }
+@property --c2-b { syntax: '<color>'; inherits: true; initial-value: #fdf4e3; }
+@property --c2-ink { syntax: '<color>'; inherits: true; initial-value: #e2561f; }
+@property --c3-bg { syntax: '<color>'; inherits: true; initial-value: #c9e6f5; }
+@property --c3-ink { syntax: '<color>'; inherits: true; initial-value: #4e5b31; }
+@property --c4-a { syntax: '<color>'; inherits: true; initial-value: #b8264f; }
+@property --c4-b { syntax: '<color>'; inherits: true; initial-value: #f3a0b6; }
+@property --c4-ink { syntax: '<color>'; inherits: true; initial-value: #fdf4e3; }
+@property --frame { syntax: '<color>'; inherits: true; initial-value: #fdf4e3; }
+
+:root {
+  transition: --bg 1100ms ease, --ink 1100ms ease, --ink-shadow 1100ms ease, --c1-bg 1100ms ease, --c1-ink 1100ms ease, --c2-a 1100ms ease, --c2-b 1100ms ease, --c2-ink 1100ms ease, --c3-bg 1100ms ease, --c3-ink 1100ms ease, --c4-a 1100ms ease, --c4-b 1100ms ease, --c4-ink 1100ms ease, --frame 1100ms ease;
+}
+
 :root {
   /* Paleta da identidade */
   --cream: #fdf4e3;
@@ -22,8 +43,8 @@
 html, body { min-height: 100%; }
 
 body {
-  background: var(--cream);
-  color: var(--crimson);
+  background: var(--bg);
+  color: var(--ink);
   font-family: var(--label);
   -webkit-font-smoothing: antialiased;
 }
@@ -81,15 +102,15 @@ body {
   min-height: calc(var(--win-h) + 120px);
 }
 
-.card--category { background: var(--butter); color: var(--crimson); }
+.card--category { background: var(--c1-bg); color: var(--c1-ink); }
 
 .card--name {
-  color: var(--orange);
+  color: var(--c2-ink);
   background: repeating-linear-gradient(90deg,
-    var(--lavender) 0 var(--stripe), var(--cream) var(--stripe) calc(var(--stripe) * 2));
+    var(--c2-a) 0 var(--stripe), var(--c2-b) var(--stripe) calc(var(--stripe) * 2));
 }
 
-.card--ref { background: var(--sky); color: var(--olive); padding: 12px; }
+.card--ref { background: var(--c3-bg); color: var(--c3-ink); padding: 12px; }
 .card--ref .frame {
   flex: 1;
   width: 100%;
@@ -104,9 +125,9 @@ body {
 }
 
 .card--image {
-  color: var(--cream);
+  color: var(--c4-ink);
   background: repeating-linear-gradient(90deg,
-    var(--crimson) 0 var(--stripe), var(--pink) var(--stripe) calc(var(--stripe) * 2));
+    var(--c4-a) 0 var(--stripe), var(--c4-b) var(--stripe) calc(var(--stripe) * 2));
 }
 
 .label { font-size: 0.78rem; }
@@ -137,7 +158,7 @@ body {
   line-height: 0.98;
   letter-spacing: -0.01em;
   overflow-wrap: anywhere;
-  hyphens: auto;
+  hyphens: manual;
 }
 .strip:not(.spinning) .item { height: 100%; }
 .strip:not(.spinning) { inset: 0; }
@@ -148,8 +169,8 @@ body {
 .window--image {
   -webkit-mask-image: none;
           mask-image: none;
-  background: var(--cream);
-  border: 6px solid var(--cream);
+  background: var(--frame);
+  border: 6px solid var(--frame);
 }
 .window--image .item { padding: 0; }
 .window--image img {
@@ -162,7 +183,7 @@ body {
   user-select: none;
   -webkit-user-drag: none;
 }
-.window--image .spark { width: 34px; height: 34px; color: var(--crimson); }
+.window--image .spark { width: 34px; height: 34px; color: var(--ink); }
 
 /* ---------- Botão ---------- */
 .spin {
@@ -172,27 +193,27 @@ body {
   padding: 18px 40px 20px;
   border: 0;
   border-radius: 999px;
-  background: var(--crimson);
-  color: var(--cream);
+  background: var(--ink);
+  color: var(--bg);
   font-family: var(--display);
   font-size: clamp(1.5rem, 2.6vw, 2.1rem);
   letter-spacing: 0.02em;
   text-transform: uppercase;
   cursor: pointer;
-  box-shadow: 0 6px 0 #7e1736;
+  box-shadow: 0 6px 0 var(--ink-shadow);
   transition: transform 160ms ease, box-shadow 160ms ease, background-color 300ms ease;
 }
 .spin .spark { width: 16px; height: 16px; transition: transform 600ms cubic-bezier(.3,1.6,.5,1); }
-.spin:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 0 #7e1736; }
+.spin:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 0 var(--ink-shadow); }
 .spin:hover:not(:disabled) .spark { transform: rotate(90deg) scale(1.15); }
-.spin:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 2px 0 #7e1736; }
+.spin:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 2px 0 var(--ink-shadow); }
 .spin:focus-visible { outline: 3px solid var(--cobalt); outline-offset: 4px; }
-.spin:disabled { cursor: default; transform: translateY(4px); box-shadow: 0 2px 0 #7e1736; }
+.spin:disabled { cursor: default; transform: translateY(4px); box-shadow: 0 2px 0 var(--ink-shadow); }
 .spin:disabled .spark { animation: twirl 900ms linear infinite; }
 
 @keyframes twirl { to { transform: rotate(360deg); } }
 
-.foot { color: var(--crimson); opacity: 0.55; font-size: 0.68rem; margin-top: auto; }
+.foot { color: var(--ink); opacity: 0.55; font-size: 0.68rem; margin-top: auto; }
 
 /* ---------- Responsivo ---------- */
 @media (max-width: 960px) {

@@ -160,6 +160,100 @@
     });
   }
 
+  // ---------- tema a partir da imagem (modo teste) ----------
+  // Cada referência tem uma paleta extraída da imagem (data/references.js).
+  // Aqui ela vira papéis de cor da interface, garantindo contraste legível.
+  const hexToRgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
+  const rgbToHsl = ([r, g, b]) => {
+    const max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
+    if (max === min) return [0, 0, l];
+    const d = max - min, s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    const h = max === r ? (g - b) / d + (g < b ? 6 : 0) : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+    return [h / 6, s, l];
+  };
+  const hslToHex = ([h, s, l]) => {
+    const f = (n) => {
+      const k = (n + h * 12) % 12, a = s * Math.min(l, 1 - l);
+      const c = l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1));
+      return Math.round(c * 255).toString(16).padStart(2, "0");
+    };
+    return `#${f(0)}${f(8)}${f(4)}`;
+  };
+  const lum = (hex) => {
+    const [r, g, b] = hexToRgb(hex).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+  const contrast = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+
+  // versão clara (fundo) de uma cor, mantendo o matiz
+  const tint = (hex, l) => { const [h, s] = rgbToHsl(hexToRgb(hex)); return hslToHex([h, s < 0.12 ? s : clamp(s * 1.15, 0.42, 0.85), l]); };
+  // escurece até ter contraste suficiente contra o fundo
+  const readable = (hex, against, min) => {
+    let [h, s, l] = rgbToHsl(hexToRgb(hex));
+    let out = hex;
+    while (contrast(out, against) < min && l > 0.04) { l -= 0.03; s = Math.min(1, s + 0.01); out = hslToHex([h, s, l]); }
+    return out;
+  };
+  const vivid = (hex) => { const [, s, l] = rgbToHsl(hexToRgb(hex)); return s * (1 - Math.abs(l - 0.45) * 1.3); };
+  const hueDist = (a, b) => { const d = Math.abs(rgbToHsl(hexToRgb(a))[0] - rgbToHsl(hexToRgb(b))[0]); return Math.min(d, 1 - d); };
+
+  // escolhe a cor mais viva e distinta do fundo, que fique legível sobre ele
+  function pickInk(pal, bg, min, avoid = []) {
+    const ranked = [...pal].sort((a, b) =>
+      (vivid(b) + Math.min(...avoid.map((x) => hueDist(b, x)), 0.5)) -
+      (vivid(a) + Math.min(...avoid.map((x) => hueDist(a, x)), 0.5)));
+    return readable(ranked[0], bg, min);
+  }
+
+  function themeFrom(pal) {
+    if (!pal || !pal.length) return null;
+    const P = [...pal];
+    while (P.length < 4) P.push(P[P.length - 1]);
+    const byVivid = [...P].sort((a, b) => vivid(b) - vivid(a));
+    const lightest = [...P].sort((a, b) => rgbToHsl(hexToRgb(b))[2] - rgbToHsl(hexToRgb(a))[2])[0];
+
+    const bg = tint(lightest, 0.94);
+    const ink = readable(byVivid[0], bg, 3.4); // texto grande: título e botão
+    const [ih, is, il] = rgbToHsl(hexToRgb(ink));
+
+    // quatro superfícies, com cores diferentes da paleta
+    const s1 = byVivid[1 % byVivid.length], s2 = byVivid[2 % byVivid.length], s3 = byVivid[3 % byVivid.length];
+    const c1bg = tint(s1, 0.8);
+    const c2a = tint(s2, 0.82);
+    const c3bg = tint(s3, 0.84);
+
+    const strong = byVivid[0];
+    const [sh, ss] = rgbToHsl(hexToRgb(strong));
+    const c4a = hslToHex([sh, clamp(ss, 0.35, 0.9), 0.42]);
+    const c4b = tint(byVivid[1 % byVivid.length], 0.72);
+
+    return {
+      "bg": bg,
+      "ink": ink,
+      "ink-shadow": hslToHex([ih, is, Math.max(0.05, il - 0.14)]),
+      "c1-bg": c1bg,
+      "c1-ink": pickInk(P, c1bg, 3.6, [s1]),
+      "c2-a": c2a,
+      "c2-b": bg,
+      "c2-ink": pickInk(P, c2a, 3.6, [s2, ink]),
+      "c3-bg": c3bg,
+      "c3-ink": pickInk(P, c3bg, 4, [s3]),
+      "c4-a": c4a,
+      "c4-b": c4b,
+      "c4-ink": bg,
+      "frame": bg,
+    };
+  }
+
+  function applyTheme(ref) {
+    const t = themeFrom(ref && ref.palette);
+    if (!t) return;
+    const root = document.documentElement.style;
+    Object.entries(t).forEach(([k, v]) => root.setProperty(`--${k}`, v));
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", t.bg);
+  }
+
   // ---------- sorteio ----------
   function draw() {
     let pick, key, tries = 0;
@@ -214,6 +308,7 @@
       ], tRef),
     ]);
 
+    applyTheme(next.ref);
     current = next;
     spinning = false;
     button.disabled = false;
