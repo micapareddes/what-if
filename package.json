@@ -1,0 +1,13 @@
+{
+  "name": "e-se",
+  "private": true,
+  "type": "module",
+  "description": "E SE? — Random Identity Generator | The Brisa Studio",
+  "scripts": {
+    "catalogar": "node scripts/catalogar.mjs",
+    "dev": "npx --yes serve -l 4321 ."
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "latest"
+  }
+}
