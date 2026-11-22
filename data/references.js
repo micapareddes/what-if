@@ -450,5 +450,197 @@ window.ESE_REFERENCES = [
       "#f2234b",
       "#eb5c62"
     ]
+  },
+  {
+    "file": "36.jpg",
+    "name": "Floral Tiles",
+    "palette": [
+      "#d39f94",
+      "#a6665b",
+      "#e4cfab",
+      "#97302f",
+      "#697096",
+      "#6e6156",
+      "#17181c"
+    ]
+  },
+  {
+    "file": "37.jpg",
+    "name": "Bead Curtain",
+    "palette": [
+      "#945e2d",
+      "#592f1d",
+      "#f3e9d8",
+      "#a98e5e",
+      "#ceb698",
+      "#251e14"
+    ]
+  },
+  {
+    "file": "38.jpg",
+    "name": "Tiled Bath",
+    "palette": [
+      "#94532a",
+      "#572718",
+      "#d4a15f",
+      "#24314d",
+      "#cd5538",
+      "#d6a497",
+      "#655a57"
+    ]
+  },
+  {
+    "file": "39.jpg",
+    "name": "Snack Caterpillar",
+    "palette": [
+      "#5c241f",
+      "#d2bdab",
+      "#27170e",
+      "#ceab75",
+      "#8e7158",
+      "#eee1d3",
+      "#953f41"
+    ]
+  },
+  {
+    "file": "40.jpg",
+    "name": "Star Dish",
+    "palette": [
+      "#d09f26",
+      "#9b7351",
+      "#caa363",
+      "#d8dadf",
+      "#f0d05b",
+      "#6f512c",
+      "#a5a2a1"
+    ]
+  },
+  {
+    "file": "41.jpg",
+    "name": "Meadow Meditation",
+    "palette": [
+      "#5d6229",
+      "#ebd461",
+      "#9f9531",
+      "#572119",
+      "#926e5b",
+      "#988c95",
+      "#cc6537"
+    ]
+  },
+  {
+    "file": "42.jpg",
+    "name": "Laptop Huddle",
+    "palette": [
+      "#986e64",
+      "#1d1519",
+      "#4e332c",
+      "#a39cd0",
+      "#a28f94",
+      "#d89b8d",
+      "#726d97"
+    ]
+  },
+  {
+    "file": "43.jpg",
+    "name": "Girls Night",
+    "palette": [
+      "#a0695b",
+      "#533126",
+      "#675953",
+      "#c8a1ae",
+      "#15070a",
+      "#295758",
+      "#778025"
+    ]
+  },
+  {
+    "file": "44.jpg",
+    "name": "Hand Roof",
+    "palette": [
+      "#935764",
+      "#572c2e",
+      "#191813",
+      "#a08e96",
+      "#ded0b0"
+    ]
+  },
+  {
+    "file": "45.jpg",
+    "name": "Spider Suit",
+    "palette": [
+      "#d4342d",
+      "#a01e23",
+      "#57576f",
+      "#969aa7",
+      "#2b2357",
+      "#641523",
+      "#1c1423"
+    ]
+  },
+  {
+    "file": "46.jpg",
+    "name": "Lace Parasol",
+    "palette": [
+      "#d8dae5",
+      "#6ba0a4",
+      "#222a2c",
+      "#596158",
+      "#a7b9ca",
+      "#8c8f72",
+      "#af6537"
+    ]
+  },
+  {
+    "file": "47.jpg",
+    "name": "Elf Hat",
+    "palette": [
+      "#e6a968",
+      "#b59275",
+      "#561b17",
+      "#9c6e53",
+      "#a0201d",
+      "#2a4c2b",
+      "#614b33"
+    ]
+  },
+  {
+    "file": "48.jpg",
+    "name": "Purple Bandana",
+    "palette": [
+      "#685353",
+      "#59339e",
+      "#251b31",
+      "#9f675f",
+      "#e09c91",
+      "#e3e0ef",
+      "#b19cce"
+    ]
+  },
+  {
+    "file": "49.jpg",
+    "name": "Horse Tongue",
+    "palette": [
+      "#945f25",
+      "#2393d9",
+      "#5d3416",
+      "#ad8e54",
+      "#2b1a0f",
+      "#d8b295",
+      "#6e5f4d"
+    ]
+  },
+  {
+    "file": "50.jpg",
+    "name": "Butterfly Jeans",
+    "palette": [
+      "#686462",
+      "#1b1f28",
+      "#9d9b9a",
+      "#d1c6b8",
+      "#3c424a",
+      "#97382a",
+      "#3a5ca5"
+    ]
   }
 ];

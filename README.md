@@ -29,3 +29,9 @@ na próxima execução.
 
 ## Adicionar categorias e nomes
 Inclua a categoria em `data/categories.js` e a mesma chave com seus nomes em `data/names.js`.
+
+## Como o sorteio funciona
+Cada conjunto (categorias, nomes de cada categoria e imagens) funciona como um baralho embaralhado:
+tudo sai uma vez antes de qualquer item repetir, e então o baralho é embaralhado de novo.
+O andamento fica salvo no navegador, então vale também entre visitas. Imagens novas entram
+na rodada atual automaticamente.

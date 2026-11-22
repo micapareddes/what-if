@@ -27,7 +27,6 @@
 
   let spinning = false;
   let current = null;      // { category, name, ref }
-  let lastKey = "";
 
   // ---------- utilidades ----------
   const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
@@ -255,18 +254,60 @@
   }
 
   // ---------- sorteio ----------
+  // Sorteio em "baralho": cada conjunto é embaralhado e consumido carta a carta.
+  // Tudo sai uma vez antes de qualquer item repetir; ao fim, embaralha de novo.
+  // O estado fica salvo no navegador, então vale também entre visitas.
+  const STORE = "ese-bags-v1";
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem(STORE)) || {}; } catch { saved = {}; }
+  const persist = () => { try { localStorage.setItem(STORE, JSON.stringify(saved)); } catch {} };
+
+  const randInt = (n) => {
+    if (window.crypto && crypto.getRandomValues) {
+      const lim = Math.floor(0x100000000 / n) * n, buf = new Uint32Array(1);
+      do { crypto.getRandomValues(buf); } while (buf[0] >= lim);
+      return buf[0] % n;
+    }
+    return Math.floor(Math.random() * n);
+  };
+  const shuffle = (arr) => {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) { const j = randInt(i + 1); [a[i], a[j]] = [a[j], a[i]]; }
+    return a;
+  };
+
+  // ids: lista de identificadores estáveis do conjunto
+  function nextFrom(bagName, ids) {
+    const all = new Set(ids);
+    const bag = saved[bagName] || { left: [], used: [] };
+    // sincroniza com os dados atuais: remove apagados, inclui itens novos na rodada atual
+    bag.left = bag.left.filter((id) => all.has(id));
+    bag.used = bag.used.filter((id) => all.has(id));
+    const known = new Set([...bag.left, ...bag.used]);
+    ids.forEach((id) => { if (!known.has(id)) bag.left.splice(randInt(bag.left.length + 1), 0, id); });
+
+    if (!bag.left.length) {
+      const last = bag.used[bag.used.length - 1];
+      bag.left = shuffle(ids);
+      // não começa a nova rodada repetindo o último sorteado
+      if (bag.left.length > 1 && bag.left[0] === last) bag.left.push(bag.left.shift());
+      bag.used = [];
+    }
+    const id = bag.left.shift();
+    bag.used.push(id);
+    saved[bagName] = bag;
+    return id;
+  }
+
+  const refByFile = new Map(REFS.map((r) => [r.file, r]));
+
   function draw() {
-    let pick, key, tries = 0;
-    do {
-      const category = randOther(CATEGORIES, current && current.category);
-      const pool = NAMES[category] && NAMES[category].length ? NAMES[category] : ["Sem nome"];
-      const name = rand(pool);
-      const ref = randOther(REFS, current && current.ref);
-      pick = { category, name, ref };
-      key = `${category}|${name}|${ref.file}`;
-    } while (key === lastKey && ++tries < 20);
-    lastKey = key;
-    return pick;
+    const category = nextFrom("categories", CATEGORIES);
+    const pool = NAMES[category] && NAMES[category].length ? NAMES[category] : ["Sem nome"];
+    const name = nextFrom("names:" + category, pool);
+    const ref = refByFile.get(nextFrom("refs", REFS.map((r) => r.file)));
+    persist();
+    return { category, name, ref };
   }
 
   const allNames = Object.values(NAMES).flat();
